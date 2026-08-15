@@ -1,0 +1,36 @@
+# ============================================================
+# Docker Compose — Full Stack (Phase 9 will add more services)
+# ============================================================
+# Currently only PostgreSQL is configured.
+# In Phase 9 we'll add: backend, frontend, AI service.
+#
+# Commands:
+#   docker-compose up -d          # Start all services
+#   docker-compose down           # Stop all services
+#   docker-compose logs postgres  # View DB logs
+#   docker-compose ps             # List running services
+# ============================================================
+
+services:
+  # --- PostgreSQL Database ---
+  postgres:
+    image: postgres:16-alpine
+    container_name: proactive_maintenance_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: proactive_maintenance
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d proactive_maintenance"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+    driver: local
